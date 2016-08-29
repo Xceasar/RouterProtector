@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnAnother).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,AnotherMethod.class));
+                startActivity(new Intent(MainActivity.this,WifiActivity.class));
             }
         });
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnRebootRouter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rebootRouter("http://192.168.1.1/userRpm/SysRebootRpm.htm?Reboot=%D6%D8%C6%F4%C2%B7%D3%C9%C6%F7","2");
+                readNet("http://192.168.1.1/userRpm/SysRebootRpm.htm?Reboot=%D6%D8%C6%F4%C2%B7%D3%C9%C6%F7","2");
             }
         });
     }
@@ -76,29 +76,17 @@ public class MainActivity extends AppCompatActivity {
                try {
                     URL url=new URL(strings[0]);
                     try {
-//                        CookieManager cookieManager = new CookieManager();
-//                        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-//                        CookieHandler.setDefault(cookieManager);
-//                        HttpCookie cookie = new HttpCookie("Authorization", "Basic%20YWRtaW46MzI2MzI2");
-//                        cookie.setDomain("192.168.1.1");
-//                        cookie.setPath("/");
-//                        cookie.setVersion(0);
-//                        try {
-//                            cookieManager.getCookieStore().add(new URI("http://192.168.1.1/"), cookie);
-//                        } catch (URISyntaxException e) {
-//                            e.printStackTrace();
-//                        }
-
-
 
                         HttpURLConnection connection= (HttpURLConnection) url.openConnection();
                         connection.setRequestProperty("Cookie","Authorization=Basic%20YWRtaW46YWRtaW4xMjM%3D; ChgPwdSubTag=");
-                       // String choose=strings[1];
-                        //if(choose.equals("1"))
-                        //这里一使用if就报错,没找到原因!
-                        {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
-                        //if(strings[1].equals("2".toString())) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
+                        String choose=strings[1];
 
+                        //1-修改密码:
+                        if(choose.equals("1")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
+                        //2-重启路由器:
+                        if(choose.equals("2")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
+
+                        //由于并没有POST数据,这里先注释掉
 //                        connection.setDoOutput(true);
 //                        connection.setRequestMethod("POST");
 //                        connection.setChunkedStreamingMode(0);
@@ -125,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-                //URLConnection connection=
                 return null;
 
             }
@@ -135,77 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 super.onProgressUpdate(values);
                 tv.setText(values[0]);
             }
-        }.execute(address);
+        }.execute(address,step);//这里注意不要少传参数了
     }
 
-    public void rebootRouter(String address,String step)   {
-        new AsyncTask<String,String,String>(){
 
-            @Override
-            protected String doInBackground(String... strings) {
-                try {
-                    URL url=new URL(strings[0]);
-                    try {
-//                        CookieManager cookieManager = new CookieManager();
-//                        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-//                        CookieHandler.setDefault(cookieManager);
-//                        HttpCookie cookie = new HttpCookie("Authorization", "Basic%20YWRtaW46MzI2MzI2");
-//                        cookie.setDomain("192.168.1.1");
-//                        cookie.setPath("/");
-//                        cookie.setVersion(0);
-//                        try {
-//                            cookieManager.getCookieStore().add(new URI("http://192.168.1.1/"), cookie);
-//                        } catch (URISyntaxException e) {
-//                            e.printStackTrace();
-//                        }
-
-
-
-                        HttpURLConnection connection= (HttpURLConnection) url.openConnection();
-                        connection.setRequestProperty("Cookie","Authorization=Basic%20YWRtaW46YWRtaW4xMjM%3D; ChgPwdSubTag=");
-                        // String choose=strings[1];
-                        //if(choose.equals("1"))
-                        //这里一使用if就报错,没找到原因!
-                        //{connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
-                        //if(strings[1].equals("2".toString()))
-                        {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
-
-//                        connection.setDoOutput(true);
-//                        connection.setRequestMethod("POST");
-//                        connection.setChunkedStreamingMode(0);
-//                        OutputStreamWriter osw=new OutputStreamWriter(connection.getOutputStream(),"utf-8");
-//                        BufferedWriter bw=new BufferedWriter(osw);
-//                        bw.write("");
-//                        bw.flush();
-
-                        InputStream is=connection.getInputStream();
-                        InputStreamReader isr=new InputStreamReader(is,"gb2312");
-                        BufferedReader br=new BufferedReader(isr);
-                        String result="result:";
-                        while(br.readLine()!=null){
-                            result=result+br.readLine();
-                        }
-//                        byte[] b=new byte[100];
-//                        is.read(b,0,50);
-//                        String sss=new String(b,"utf-8");
-
-                        publishProgress(result);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                //URLConnection connection=
-                return null;
-
-            }
-
-            @Override
-            protected void onProgressUpdate(String... values) {
-                super.onProgressUpdate(values);
-                tv.setText(values[0]);
-            }
-        }.execute(address);
-    }
 }
