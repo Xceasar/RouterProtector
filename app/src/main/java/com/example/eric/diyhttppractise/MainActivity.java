@@ -1,7 +1,8 @@
 package com.example.eric.diyhttppractise;
 
 import android.annotation.TargetApi;
-import android.content.Context;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private int wifiIndex;
     private List<ScanResult> wifiList;
     private List<WifiConfiguration> wifiConfigurationlist;
+    private ClipboardManager myClipboard;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,26 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnStartCommand).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,commandExcuting.class));
+                startActivity(new Intent(MainActivity.this,CommandExcuting.class));
+            }
+        });
+
+        //复制密码到剪切板:
+        findViewById(R.id.btnCopyPassword).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+                ClipData myClip;
+                String text =et.getText().toString();
+                myClip = ClipData.newPlainText("text", text);
+                myClipboard.setPrimaryClip(myClip);
+            }
+        });
+
+        findViewById(R.id.btnAntiArpSpoofing).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,ArpDefence.class));
             }
         });
 
@@ -112,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 + "\n Frequency:" + currentWifiInfo.getFrequency() + "MHz"
                 + "\n linkspeed:" + currentWifiInfo.getLinkSpeed() + "MBps"
                 + "\n MAC:" + currentWifiInfo.getMacAddress()
+                + "\n BSSID:" +currentWifiInfo.getBSSID()
                 + "\n SupplicantState:" + currentWifiInfo.getSupplicantState().toString()
                 + "\n DNS1:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().dns1)
                 + "\n DNS2:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().dns2)

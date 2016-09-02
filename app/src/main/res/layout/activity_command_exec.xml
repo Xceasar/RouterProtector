@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:text="cat /proc/net/route"
         android:id="@+id/btn_cat" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +24,11 @@
         android:layout_height="wrap_content"
         android:text="ls /mnt/sdcard"
         android:id="@+id/btn_ls" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="cat /proc/net/arp"
+        android:id="@+id/btn_cat_arp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

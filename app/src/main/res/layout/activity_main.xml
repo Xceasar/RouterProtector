@@ -43,6 +43,18 @@
         android:text="start command aty"
         android:id="@+id/btnStartCommand"/>
     />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="copy wifi password"
+        android:id="@+id/btnCopyPassword"/>
+    />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Anti-arpSpoofing"
+        android:id="@+id/btnAntiArpSpoofing"/>
+    />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.android.demo.R;
-import com.example.eric.diyhttppractise.WifiUtil;
 
 
 public class WifiActivity extends Activity implements OnClickListener {
@@ -51,7 +49,7 @@ public class WifiActivity extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.wifi_layout);
+        setContentView(R.layout.activity_wifi);
         wifiManager = myWifiManager.getWifiManagerInstance(getApplicationContext());
         setupViews();
         initListener();

@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".WifiActivity" />
-        <activity android:name=".commandExcuting"></activity>
+        <activity android:name=".CommandExcuting" />
+        <activity android:name=".ArpDefence"></activity>
     </application>
 
 </manifest>
