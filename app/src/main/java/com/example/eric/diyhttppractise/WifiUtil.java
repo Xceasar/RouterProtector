@@ -25,7 +25,7 @@ public class WifiUtil
      * @return
      */
     public static WifiConfiguration createWifiInfo(String SSID,
-                                                   String Password, int Type, WifiManager wifiManager)
+                                                   String Password, int Type, WifiManager wifiManager,boolean isnew)
     {
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
@@ -33,12 +33,18 @@ public class WifiUtil
         config.allowedKeyManagement.clear();
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
-        config.SSID = "\"" + SSID + "\"";
+        config.SSID=SSID;
 
-        WifiConfiguration tempConfig = isExsits(SSID, wifiManager);
-        if (tempConfig != null) {
-            wifiManager.removeNetwork(tempConfig.networkId);
-        }
+        WifiConfiguration tempConfig=null;
+        if(isnew){
+            config.SSID = "\"" + SSID + "\"";
+            tempConfig= isExsits(SSID, wifiManager,true);
+        }else {tempConfig = isExsits(SSID, wifiManager,false);}
+
+            if (tempConfig != null) {
+                wifiManager.removeNetwork(tempConfig.networkId);
+            }
+
 
         if (Type == 1) // WIFICIPHER_NOPASS
         {
@@ -87,13 +93,21 @@ public class WifiUtil
      * @return
      */
     private static WifiConfiguration isExsits(String SSID,
-                                              WifiManager wifiManager)
+                                              WifiManager wifiManager,boolean isnew)
     {
         List<WifiConfiguration> existingConfigs = wifiManager
                 .getConfiguredNetworks();
-        for (WifiConfiguration existingConfig : existingConfigs) {
-            if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
-                return existingConfig;
+        if (isnew){
+            for (WifiConfiguration existingConfig : existingConfigs) {
+                if (existingConfig.SSID.equals("\""+SSID+"\"")) {//已经恢复这里SSID的引号~
+                    return existingConfig;
+                }
+            }
+        }else {
+            for (WifiConfiguration existingConfig : existingConfigs) {
+                if (existingConfig.SSID.equals(SSID)) {
+                    return existingConfig;
+                }
             }
         }
         return null;

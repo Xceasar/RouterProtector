@@ -32,6 +32,7 @@ import com.example.eric.diyhttppractise.WifiUtil;
 public class WifiActivity extends Activity implements OnClickListener {
 
     private Button scan_button;
+    private Button btnReconn;
 
     private TextView wifi_result_textview;
 
@@ -51,7 +52,7 @@ public class WifiActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wifi_layout);
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager = myWifiManager.getWifiManagerInstance(getApplicationContext());
         setupViews();
         initListener();
     }
@@ -62,9 +63,16 @@ public class WifiActivity extends Activity implements OnClickListener {
         openWifi();//打开了wifi,从而让后面的wifiManager获取到信息
         currentWifiInfo = wifiManager.getConnectionInfo();
         wifi_result_textview.setText(" 当前网络：" + currentWifiInfo.getSSID()//增加了显示的信息
-                + "\n ip:" + WifiUtil.intToIp(currentWifiInfo.getIpAddress()) + "\n Frequency:" + currentWifiInfo.getFrequency() + "MHz"
-                + "\n linkspeed:" + currentWifiInfo.getLinkSpeed() + "MBps" + "\n MAC:" + currentWifiInfo.getMacAddress() + "\n SupplicantState:"
-                + currentWifiInfo.getSupplicantState().toString()
+                + "\n ip:" + WifiUtil.intToIp(currentWifiInfo.getIpAddress())
+                + "\n Frequency:" + currentWifiInfo.getFrequency() + "MHz"
+                + "\n linkspeed:" + currentWifiInfo.getLinkSpeed() + "MBps"
+                + "\n MAC:" + currentWifiInfo.getMacAddress()
+                + "\n SupplicantState:" + currentWifiInfo.getSupplicantState().toString()
+                + "\n DNS1:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().dns1)
+                + "\n DNS2:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().dns2)
+                + "\n gateway:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().gateway)
+                + "\n netmask:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().netmask)
+                + "\n server address:"+ WifiUtil.intToIp(wifiManager.getDhcpInfo().serverAddress)
 
         );
         new ScanWifiThread().start();//
@@ -73,6 +81,7 @@ public class WifiActivity extends Activity implements OnClickListener {
 
     public void setupViews() {
         scan_button = (Button) findViewById(R.id.scan_button);
+
         wifi_result_textview = (TextView) findViewById(R.id.wifi_result_textview);
         //super.setupViews();
     }
@@ -127,7 +136,7 @@ public class WifiActivity extends Activity implements OnClickListener {
      */
     public void startScan() {
         wifiManager.startScan();//扫描
-        // 获取扫描结果
+        // 获取扫描结果SSID到字符串数组中
         wifiList = wifiManager.getScanResults();
         str = new String[wifiList.size()];
         String tempStr = null;
@@ -175,8 +184,10 @@ public class WifiActivity extends Activity implements OnClickListener {
                 if (null != currentWifiInfo.getSSID()
                         && 0 != currentWifiInfo.getIpAddress()) {
                     flag = false;
+
                 }
             }
+            //已经成功连接上了,发送成功的消息
             handler.sendEmptyMessage(4);
             super.run();
         }
@@ -207,13 +218,14 @@ public class WifiActivity extends Activity implements OnClickListener {
             if (index > wifiList.size()) {
                 return null;
             }
-            // 连接配置好指定ID的网络
+            // 建立一个新的config,连接配置好指定ID的网络
             WifiConfiguration config = WifiUtil.createWifiInfo(
-                    wifiList.get(index).SSID, params[1], 3, wifiManager);
-
+                    wifiList.get(index).SSID, params[1], 3, wifiManager,true);//3为wpa
+            //int networkId = wifiManager.updateNetwork(config);
             int networkId = wifiManager.addNetwork(config);
             if (null != config) {
                 wifiManager.enableNetwork(networkId, true);
+                //enableNetwork第二个参数为true时,将会禁止其他网络的连接而只连接这个网络
                 return wifiList.get(index).SSID;
             }
             return null;
@@ -227,7 +239,7 @@ public class WifiActivity extends Activity implements OnClickListener {
             if (null != result) {
                 handler.sendEmptyMessage(0);
             } else {
-                handler.sendEmptyMessage(1);
+                handler.sendEmptyMessage(1);//连接失败
             }
             super.onPostExecute(result);
         }
@@ -280,7 +292,9 @@ public class WifiActivity extends Activity implements OnClickListener {
 
     };
 
+
+
+
 }
 
-//3、辅助类：WifiUtil.java
 

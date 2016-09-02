@@ -31,6 +31,18 @@
     android:text="start another"
     android:id="@+id/btnAnother"
     />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="reconnect"
+        android:id="@+id/btnReconnect"/>
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start command aty"
+        android:id="@+id/btnStartCommand"/>
+    />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

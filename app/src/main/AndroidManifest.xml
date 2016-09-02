@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".WifiActivity" />
-        <activity android:name=".TEST"></activity>
+        <activity android:name=".commandExcuting"></activity>
     </application>
 
 </manifest>
