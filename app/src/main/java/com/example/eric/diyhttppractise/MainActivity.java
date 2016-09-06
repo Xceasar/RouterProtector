@@ -79,6 +79,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btnAddMac).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readNet("http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Mac=00-1D-0F-11-22-33&Desc=&entryEnabled=1&Changed=0&SelIndex=0&Page=1&Save=%B1%A3+%B4%E67","3");
+            }
+        });
+
         findViewById(R.id.btnReconnect).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
                         if(choose.equals("1")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
                         //2-重启路由器:
                         if(choose.equals("2")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
+                        //添加mac
+                        if(choose.equals("3")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Add=Add&Page=1");}
 
                         //由于并没有POST数据,这里先注释掉
 //                        connection.setDoOutput(true);

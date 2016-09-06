@@ -24,7 +24,12 @@
         </activity>
         <activity android:name=".WifiActivity" />
         <activity android:name=".CommandExcuting" />
-        <activity android:name=".ArpDefence"></activity>
+        <activity android:name=".ArpDefence" />
+
+        <service
+            android:name=".ServiceArpDetection"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
