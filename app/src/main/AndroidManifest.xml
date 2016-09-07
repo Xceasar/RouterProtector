@@ -29,7 +29,9 @@
         <service
             android:name=".ServiceArpDetection"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".mac_addr_management"></activity>
     </application>
 
 </manifest>

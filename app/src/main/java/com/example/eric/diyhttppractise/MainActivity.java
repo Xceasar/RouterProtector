@@ -122,6 +122,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btnDelMac).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                readNet("http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Del=7&Page=1","4");
+            }
+        });
+
         wifiManager=myWifiManager.getWifiManagerInstance(getApplicationContext());
 
     }
@@ -173,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
                         if(choose.equals("2")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
                         //添加mac
                         if(choose.equals("3")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Add=Add&Page=1");}
-
+                        //删除mac
+                        if(choose.equals("4")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm");}
                         //由于并没有POST数据,这里先注释掉
 //                        connection.setDoOutput(true);
 //                        connection.setRequestMethod("POST");
