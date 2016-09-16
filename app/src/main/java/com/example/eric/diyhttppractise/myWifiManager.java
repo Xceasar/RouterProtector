@@ -16,5 +16,6 @@ public class myWifiManager {
             wifiManager=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         }
         return wifiManager;
+        //this is a comment
     }
 }
