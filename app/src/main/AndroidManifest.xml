@@ -31,14 +31,10 @@
             android:enabled="true"
             android:exported="true" />
 
-<<<<<<< HEAD
         <activity
             android:name=".ActivityRouterManagement"
             android:label="@string/title_activity_activity_router_management"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-=======
-        <activity android:name=".mac_addr_management"></activity>
->>>>>>> origin/master
     </application>
 
 </manifest>

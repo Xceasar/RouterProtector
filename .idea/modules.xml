@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RouterProtector-master.iml" filepath="$PROJECT_DIR$/RouterProtector-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RouterProtector.iml" filepath="$PROJECT_DIR$/RouterProtector.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

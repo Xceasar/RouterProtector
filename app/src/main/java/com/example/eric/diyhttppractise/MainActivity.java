@@ -133,13 +133,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btnDelMac).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                readNet("http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Del=7&Page=1","4");
-            }
-        });
-
         wifiManager=myWifiManager.getWifiManagerInstance(getApplicationContext());
 
     }
@@ -172,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
 //        newPassword=et.getText().toString();
     }
 
-<<<<<<< HEAD
 //    public void readNet(String address, String step)   {
 //        new AsyncTask<String,String,String>(){
 //
@@ -291,126 +283,5 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //
 //}
-=======
-    public void readNet(String address, String step)   {
-        new AsyncTask<String,String,String>(){
-
-            @Override
-            protected String doInBackground(String... strings) {
-               try {
-                    URL url=new URL(strings[0]);
-                    try {
-
-                        HttpURLConnection connection= (HttpURLConnection) url.openConnection();
-                        connection.setRequestProperty("Cookie","Authorization=Basic%20YWRtaW46YWRtaW4xMjM%3D; ChgPwdSubTag=");
-                        String choose=strings[1];
-
-                        //1-修改密码:
-                        if(choose.equals("1")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
-                        //2-重启路由器:
-                        if(choose.equals("2")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
-                        //添加mac
-                        if(choose.equals("3")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Add=Add&Page=1");}
-                        //删除mac
-                        if(choose.equals("4")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm");}
-                        //由于并没有POST数据,这里先注释掉
-//                        connection.setDoOutput(true);
-//                        connection.setRequestMethod("POST");
-//                        connection.setChunkedStreamingMode(0);
-//                        OutputStreamWriter osw=new OutputStreamWriter(connection.getOutputStream(),"utf-8");
-//                        BufferedWriter bw=new BufferedWriter(osw);
-//                        bw.write("");
-//                        bw.flush();
-
-                        InputStream is=connection.getInputStream();
-                        InputStreamReader isr=new InputStreamReader(is,"gb2312");
-                        BufferedReader br=new BufferedReader(isr);
-                        String result="result:";
-                        while(br.readLine()!=null){
-                            result=result+br.readLine();
-                        }
-//                        byte[] b=new byte[100];
-//                        is.read(b,0,50);
-//                        String sss=new String(b,"utf-8");
-
-                        publishProgress(result);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                return null;
-
-            }
-
-            @Override
-            protected void onProgressUpdate(String... values) {
-                super.onProgressUpdate(values);
-                tv.setText(values[0]);
-            }
-        }.execute(address,step);//这里注意不要少传参数了
-    }
-public class UpdateWifiConfigration extends AsyncTask<String,WifiConfiguration,String>{
-    @Override
-    protected String doInBackground(String... strings) {
-        wifiManager.startScan();//扫描
-        // 获取扫描结果SSID到字符串数组中
-        wifiList = wifiManager.getScanResults();
-        int index=0;
-        String ssid = strings[0];//获取当前网络的ssid
-
-
-        // 连接配置好指定ID的网络
-               WifiConfiguration config = WifiUtil.createWifiInfo(
-               ssid, strings[1], 3, wifiManager,false);
-        wifiManager.startScan();//扫描
-
-        String result=null;
-        wifiConfigurationlist=wifiManager.getConfiguredNetworks();
-        for (WifiConfiguration existingConfig : wifiConfigurationlist) {
-            if (existingConfig.SSID.equals(ssid)) {
-                result=existingConfig.SSID;
-                //config.networkId=existingConfig.networkId;
-                break;
-            }
-        }
-
-
-        //config.networkId=wifiConfigurationlist.get(index).networkId;
-        publishProgress(config);
-
-        int networkId = wifiManager.addNetwork(config);//这条语句执行完后,就重新连接上了
-        //publishProgress(networkId);
-
-        if (null != config) {
-            for (WifiConfiguration existingConfig : wifiConfigurationlist) {
-                if (existingConfig.SSID.equals(ssid)) {
-                    result=existingConfig.SSID;
-                    //networkId=existingConfig.networkId;
-                    break;
-                }
-            }
-            boolean ifSucceed=wifiManager.enableNetwork(networkId, true);
-
-            System.out.println(result);
-            return ssid;
-        }
-        return null;
-
-    }
-
-    @Override
-    protected void onProgressUpdate(WifiConfiguration... values) {
-        super.onProgressUpdate(values);
-        tv.setText(" 要修改的ssid:"+values[0].SSID
-        +"\n 密码:"+values[0].preSharedKey
-        +"\n 当前ssid的networkId:"+values[0].networkId
-        );
-
-    }
-
-}
->>>>>>> origin/master
 
 }

@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class CommandExcuting extends Activity {
+public class CommandExcuting extends Activity {
     TextView text;
 
     /** Called when the activity is first created. */

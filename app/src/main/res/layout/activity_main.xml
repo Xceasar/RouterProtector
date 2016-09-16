@@ -72,28 +72,12 @@
         android:text="Anti-arpSpoofing"
         android:id="@+id/btnAntiArpSpoofing"/>
     />
-<<<<<<< HEAD
     <!--<Button-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:text="addMac"-->
         <!--android:id="@+id/btnAddMac"/>-->
     <!--/>-->
-=======
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="addMac"
-        android:id="@+id/btnAddMac"/>
-    />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="DelMac"
-        android:id="@+id/btnDelMac"/>
-    />
-
->>>>>>> origin/master
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
