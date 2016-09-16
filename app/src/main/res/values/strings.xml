@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DIYHttpPractise</string>
+    <string name="title_activity_activity_router_management">ActivityRouterManagement</string>
 </resources>

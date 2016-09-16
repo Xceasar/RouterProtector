@@ -1,6 +1,7 @@
 package com.example.eric.diyhttppractise;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -28,6 +29,9 @@ import android.widget.Toast;
 
 
 public class WifiActivity extends Activity implements OnClickListener {
+
+    public int WifiPasswordStrengthLevel;
+    public int WifiAuthMethod;
 
     private Button scan_button;
     private Button btnReconn;
@@ -264,18 +268,42 @@ public class WifiActivity extends Activity implements OnClickListener {
                     builder.setTitle("请输入密码").setView(layout);
                     final EditText passowrdText = (EditText) layout
                             .findViewById(R.id.password_edittext);
+                    //这里是原来的代码
+//                    builder.setPositiveButton("连接",
+//                            new DialogInterface.OnClickListener()
+//
+//                            {
+//
+//                                @Override
+//                                public void onClick(DialogInterface dialog,
+//                                                    int which) {
+//                                    connetionConfiguration(wifiIndex, passowrdText
+//                                            .getText().toString());
+//                                }
+//                            }).show();
                     builder.setPositiveButton("连接",
                             new DialogInterface.OnClickListener()
 
                             {
-
                                 @Override
                                 public void onClick(DialogInterface dialog,
                                                     int which) {
-                                    connetionConfiguration(wifiIndex, passowrdText
-                                            .getText().toString());
+                                    View layout2 = LayoutInflater.from(WifiActivity.this).inflate(
+                                            R.layout.password_strength_masurement_dialog, null);
+                                    final TextView passwordStrengthText = (TextView) layout2
+                                            .findViewById(R.id.passwordStrengthMasurement);
+                                    Builder builder2 = new Builder(WifiActivity.this);
+                                    builder2.setTitle("密码强度检测").setView(layout2);
+                                    passwordStrengthMeasure(passwordStrengthText,passowrdText.getText().toString());
+                                    builder2.setPositiveButton("确认连接", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            connetionConfiguration(wifiIndex, passowrdText.getText().toString());
+                                        }
+                                    }).show();
                                 }
-                            }).show();
+                            });
+                    builder.show();
                     break;
                 case 4:
                     Toast.makeText(WifiActivity.this, "连接成功！", Toast.LENGTH_SHORT)
@@ -290,7 +318,42 @@ public class WifiActivity extends Activity implements OnClickListener {
 
     };
 
+    public static final int WEAK_PASSWORD=0;
+    public static final int MIDDLE_PASSWORD=1;
+    public static final int NULL_PASSWORD=2;
+    public static final int STRONG_PASSWORD=3;
 
+    //判断密码强度等级,最终体现到wifi安全度评级上
+    public void passwordStrengthMeasure(TextView tv,String password){
+    if(isNumeric(password)){
+        tv.setText("this newwork has a weak password,please be care.");
+        WifiPasswordStrengthLevel=WEAK_PASSWORD;
+    }
+        else if(isNumericAndCharacter(password)){
+        tv.setText("the password is made of number and letters,which is of middle-safey");
+        WifiPasswordStrengthLevel=MIDDLE_PASSWORD;
+    }
+        else if(password.equals("")){
+        tv.setText("this network has no password! it's not safe! ");
+        WifiPasswordStrengthLevel=NULL_PASSWORD;
+    }
+        else {
+        tv.setText("this newwork has a strong password,it's safe.");
+        WifiPasswordStrengthLevel=STRONG_PASSWORD;
+    }
+}
+    public   static   boolean  isNumeric(String str){
+        for  ( int  i  =   str.length(); --i>=0; ){
+            if  ( ! Character.isDigit(str.charAt(i))){
+                return   false ;
+            }
+        }
+        return   true ;
+    }
+    public static boolean isNumericAndCharacter(String str){
+        Pattern pattern = Pattern.compile("[0-9a-zA-Z]*");
+        return pattern.matcher(str).matches();
+    }
 
 
 }

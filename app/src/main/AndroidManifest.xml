@@ -29,7 +29,12 @@
         <service
             android:name=".ServiceArpDetection"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity
+            android:name=".ActivityRouterManagement"
+            android:label="@string/title_activity_activity_router_management"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

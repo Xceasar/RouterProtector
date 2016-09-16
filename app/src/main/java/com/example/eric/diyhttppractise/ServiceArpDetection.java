@@ -59,6 +59,9 @@ public class ServiceArpDetection extends Service {
                                 break;
                             }
                             sleep(1000);
+
+                            System.out.println(i);//测试服务是否被销毁
+
                             checking+='.';
                             if(callback!=null){
                                 callback.onDataChange(resultToShow,checking);
@@ -92,7 +95,7 @@ public class ServiceArpDetection extends Service {
 
     @Override
     public void onDestroy() {
-        isRun=false;
+        //isRun=false;
         System.out.println("arp detection service onDestory!");
 //        callback.onDataChange("the arp-spoofing detection is stoped.","the result of last scan:\n"+resultToShow);
         super.onDestroy();

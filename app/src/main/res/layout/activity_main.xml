@@ -9,58 +9,75 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.example.eric.diyhttppractise.MainActivity">
+<!--<LinearLayout android:orientation="horizontal"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+<!--<EditText-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="admin123"-->
+    <!--android:id="@+id/newPass"/>-->
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="generate"-->
+        <!--android:id="@+id/btnGenerateRandomWifiPassword"-->
+        <!--/>-->
 
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="admin123"
-    android:id="@+id/newPass"/>
+<!--</LinearLayout>-->
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="change password"-->
+        <!--android:id="@+id/btnStart" />-->
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="reboot Router"-->
+        <!--android:id="@+id/btnRebootRouter" />-->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="change password"
-        android:id="@+id/btnStart" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="reboot Router"
-        android:id="@+id/btnRebootRouter" />
+        android:text="router management"
+        android:id="@+id/btnRouterManagement"
+        />
 <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="start another"
     android:id="@+id/btnAnother"
     />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="reconnect"
-        android:id="@+id/btnReconnect"/>
-        />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="reconnect"-->
+        <!--android:id="@+id/btnReconnect"/>-->
+        <!--/>-->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="start command aty"
         android:id="@+id/btnStartCommand"/>
     />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="copy wifi password"
-        android:id="@+id/btnCopyPassword"/>
-    />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="copy wifi password"-->
+        <!--android:id="@+id/btnCopyPassword"/>-->
+    <!--/>-->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Anti-arpSpoofing"
         android:id="@+id/btnAntiArpSpoofing"/>
     />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="addMac"
-        android:id="@+id/btnAddMac"/>
-    />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="addMac"-->
+        <!--android:id="@+id/btnAddMac"/>-->
+    <!--/>-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
