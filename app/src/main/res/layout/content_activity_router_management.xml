@@ -57,11 +57,42 @@
         android:text="addMac"
         android:id="@+id/btnAddMac"/>
     />
-    <TextView
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="the result will be here......"
-        android:id="@+id/textView"
-        android:maxLines="999"
-        android:scrollbars="vertical"/>
+        android:id="@+id/btnBindNewConnectionControlService"
+        android:text="connection control"
+        android:layout_weight="1"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnUnbindNewConnectionControlService"
+        android:text="unbind control"
+        android:layout_weight="1"
+        />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="the result will be here......"
+            android:id="@+id/textView"
+            android:maxLines="999"
+            android:scrollbars="vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="the state will be here......"
+            android:id="@+id/textView2"
+            android:maxLines="999"
+            android:scrollbars="vertical"/>
+    </LinearLayout>
 </LinearLayout>

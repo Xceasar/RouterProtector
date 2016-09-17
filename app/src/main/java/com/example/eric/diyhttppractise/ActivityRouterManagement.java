@@ -4,7 +4,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -12,6 +15,9 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,11 +35,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.StringTokenizer;
 
-public class ActivityRouterManagement extends Activity {
+public class ActivityRouterManagement extends Activity implements View.OnClickListener,ServiceConnection{
 
 
-    private TextView tv;
+    private static TextView tv;//改成了static
+    private static TextView tv2;//改成了static
+
+    private boolean isSuccess;
+
     private EditText et;
     private String newPassword;
     private WifiManager wifiManager;
@@ -43,6 +54,20 @@ public class ActivityRouterManagement extends Activity {
     private List<ScanResult> wifiList;
     private List<WifiConfiguration> wifiConfigurationlist;
     private ClipboardManager myClipboard;
+    public ServiceNewConnectionControl.Binder binder=null;
+
+    private Intent intent;
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            //这里应该谈个对话框,提示有新的MAC地址连入了
+            tv2.setText(msg.getData().getString("state"));
+
+        }
+    };
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -54,64 +79,82 @@ public class ActivityRouterManagement extends Activity {
 
         tv= (TextView) findViewById(R.id.textView);
         tv.setMovementMethod(new ScrollingMovementMethod());
+        tv2= (TextView) findViewById(R.id.textView);
+        tv2.setMovementMethod(new ScrollingMovementMethod());
+
+        intent=new Intent(this,ServiceNewConnectionControl.class);
 
 
         //修改密码
-        findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //readNet("http://192.168.1.1");
+        findViewById(R.id.btnStart).setOnClickListener(this);
+        //重启路由器
+        findViewById(R.id.btnRebootRouter).setOnClickListener(this);
+        //添加mac
+        findViewById(R.id.btnAddMac).setOnClickListener(this);
+        //重新连接wifi
+        findViewById(R.id.btnReconnect).setOnClickListener(this);
+        //复制密码到剪切板:
+        findViewById(R.id.btnCopyPassword).setOnClickListener(this);
+        //绑定接入控制service
+        findViewById(R.id.btnBindNewConnectionControlService).setOnClickListener(this);
+        //解绑接入控制service
+        findViewById(R.id.btnUnbindNewConnectionControlService).setOnClickListener(this);
+
+        wifiManager=myWifiManager.getWifiManagerInstance(getApplicationContext());
+
+    }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btnStart:{
                 newPassword=et.getText().toString();
                 ssid=currentWifiInfo.getSSID();
                 readNet("http://192.168.1.1/userRpm/WlanSecurityRpm.htm?secType=3&pskSecOpt=2&pskCipher=3&pskSecret="+newPassword+"&interval=3600&Save=%B1%A3+%B4%E6","1");
-
+                break;
             }
-        });
-
-        //重启路由器
-        findViewById(R.id.btnRebootRouter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            case R.id.btnRebootRouter:{
                 ssid=currentWifiInfo.getSSID();
                 //重启路由器
                 readNet("http://192.168.1.1/userRpm/SysRebootRpm.htm?Reboot=%D6%D8%C6%F4%C2%B7%D3%C9%C6%F7","2");
                 //更新路由器连接信息并自动重连
+                break;
             }
-        });
-
-        //添加mac
-        findViewById(R.id.btnAddMac).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            case R.id.btnAddMac:{
                 readNet("http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Mac=00-1D-0F-11-22-33&Desc=&entryEnabled=1&Changed=0&SelIndex=0&Page=1&Save=%B1%A3+%B4%E67","3");
+                break;
             }
-        });
-
-        //重新连接wifi
-        findViewById(R.id.btnReconnect).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            case R.id.btnReconnect:{
                 newPassword=et.getText().toString();
                 //ssid="\""+"Kaze"+"\"";
                 tv.setText("当前要修改密码的wifi网络ssid为:"+ssid);
                 new UpdateWifiConfigration().execute(ssid,newPassword);
+                break;
             }
-        });
-
-        //复制密码到剪切板:
-        findViewById(R.id.btnCopyPassword).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            case R.id.btnCopyPassword:{
                 myClipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
                 ClipData myClip;
                 String text =et.getText().toString();
                 myClip = ClipData.newPlainText("text", text);
                 myClipboard.setPrimaryClip(myClip);
+                break;
             }
-        });
-
-
-        wifiManager=myWifiManager.getWifiManagerInstance(getApplicationContext());
+            case R.id.btnBindNewConnectionControlService:{
+                //先启动服务
+                startService(intent);
+                //之后绑定
+                if(binder==null)
+                    isSuccess=bindService(intent,this, Context.BIND_AUTO_CREATE);
+                System.out.println(isSuccess);
+                break;
+            }
+            case R.id.btnUnbindNewConnectionControlService:{
+                if(binder!=null){
+                    unbindService(this);
+                    binder=null;
+                }
+                break;
+            }
+        }
 
     }
 
@@ -143,25 +186,33 @@ public class ActivityRouterManagement extends Activity {
         newPassword=et.getText().toString();
     }
 
-    public void readNet(String address, String step)   {
+    public static void readNet(String address, String step)   {
         new AsyncTask<String,String,String>(){
-
+            String result = null;
             @Override
             protected String doInBackground(String... strings) {
-                try {
-                    URL url=new URL(strings[0]);
-                    try {
 
-                        HttpURLConnection connection= (HttpURLConnection) url.openConnection();
-                        connection.setRequestProperty("Cookie","Authorization=Basic%20YWRtaW46YWRtaW4xMjM%3D; ChgPwdSubTag=");
-                        String choose=strings[1];
+                try {
+                    URL url = new URL(strings[0]);
+                    try {
+                        result = null;
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestProperty("Cookie", "Authorization=Basic%20YWRtaW46YWRtaW4xMjM%3D; ChgPwdSubTag=");
+                        String choose = strings[1];
 
                         //1-修改密码:
-                        if(choose.equals("1")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanSecurityRpm.htm");}
+                        if (choose.equals("1")) {
+                            connection.setRequestProperty("Referer", "http://192.168.1.1/userRpm/WlanSecurityRpm.htm");
+                        }
                         //2-重启路由器:
-                        if(choose.equals("2")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/SysRebootRpm.htm");}
+                        if (choose.equals("2")) {
+                            connection.setRequestProperty("Referer", "http://192.168.1.1/userRpm/SysRebootRpm.htm");
+                        }
                         //添加mac
-                        if(choose.equals("3")) {connection.setRequestProperty("Referer","http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Add=Add&Page=1");}
+                        if (choose.equals("3")) {
+                            connection.setRequestProperty("Referer", "http://192.168.1.1/userRpm/WlanMacFilterRpm.htm?Add=Add&Page=1");
+                        }
+
 
                         //由于并没有POST数据,这里先注释掉
 //                        connection.setDoOutput(true);
@@ -172,12 +223,12 @@ public class ActivityRouterManagement extends Activity {
 //                        bw.write("");
 //                        bw.flush();
 
-                        InputStream is=connection.getInputStream();
-                        InputStreamReader isr=new InputStreamReader(is,"gb2312");
-                        BufferedReader br=new BufferedReader(isr);
-                        String result="result:";
-                        while(br.readLine()!=null){
-                            result=result+br.readLine();
+                        InputStream is = connection.getInputStream();
+                        InputStreamReader isr = new InputStreamReader(is, "gb2312");
+                        BufferedReader br = new BufferedReader(isr);
+                        result = "result:";
+                        while (br.readLine() != null) {
+                            result = result + br.readLine();
                         }
 //                        byte[] b=new byte[100];
 //                        is.read(b,0,50);
@@ -190,7 +241,7 @@ public class ActivityRouterManagement extends Activity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-                return null;
+                return result;
 
             }
 
@@ -199,8 +250,41 @@ public class ActivityRouterManagement extends Activity {
                 super.onProgressUpdate(values);
                 tv.setText(values[0]);
             }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                return;
+            }
         }.execute(address,step);//这里注意不要少传参数了
     }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        if (binder==null){
+            binder=(ServiceNewConnectionControl.Binder)iBinder;
+            binder.getServiceNewConnectionControl().setCallback(new ServiceNewConnectionControl.Callback() {
+                @Override
+                public void onDataChange(String state,String checking,String newMac) {
+                    Message msg=new Message();
+                    Bundle b=new Bundle();
+                    b.putString("state",state);
+                    b.putString("newMac",newMac);
+                    msg.setData(b);
+                    handler.sendMessage(msg);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        binder=null;
+        System.out.println("Service disconnected!");
+    }
+
+
+
     public class UpdateWifiConfigration extends AsyncTask<String,WifiConfiguration,String>{
         @Override
         protected String doInBackground(String... strings) {

@@ -117,7 +117,7 @@ public class ServiceArpDetection extends Service {
         return new Binder();
     }
 
-    String do_exec(String gateway,String cmd) {
+     String do_exec(String gateway,String cmd) {
         String s = "\n";
         Matcher matMac=null;
         try {

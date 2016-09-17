@@ -30,6 +30,9 @@
             android:name=".ServiceArpDetection"
             android:enabled="true"
             android:exported="true" />
+        <service android:name=".ServiceNewConnectionControl"
+            android:enabled="true"
+            android:exported="true"/>
 
         <activity
             android:name=".ActivityRouterManagement"
